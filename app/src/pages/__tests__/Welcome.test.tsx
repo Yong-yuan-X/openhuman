@@ -197,7 +197,7 @@ describe('Welcome — decryption-failure recovery action', () => {
     fireEvent.click(screen.getByRole('button', { name: /Clear app data & restart/ }));
 
     await waitFor(() => {
-      expect(screen.getByText(/Could not clear app data/)).toBeInTheDocument();
+      expect(screen.getByText(/reset blew up/)).toBeInTheDocument();
     });
     // Button re-enabled so the user can retry.
     expect(screen.getByRole('button', { name: /Clear app data & restart/ })).not.toBeDisabled();

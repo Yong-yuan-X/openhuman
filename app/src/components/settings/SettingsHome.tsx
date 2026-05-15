@@ -56,8 +56,9 @@ const SettingsHome = () => {
       setError(null);
       const currentUserId = snapshot.auth.userId ?? snapshot.currentUser?._id ?? null;
       await clearAllAppData({ clearSession, userId: currentUserId }); // restarts the app
-    } catch (_error) {
-      setError('Failed to clear data and logout. Please try again.');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message || 'Failed to clear data and logout. Please try again.');
     } finally {
       setIsLoading(false);
     }
