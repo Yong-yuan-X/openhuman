@@ -196,6 +196,17 @@ describe('Welcome — decryption-failure recovery action', () => {
     // Button re-enabled so the user can retry.
     expect(screen.getByRole('button', { name: /Clear app data & restart/ })).not.toBeDisabled();
   });
+
+  it('falls back to the generic message when the error has no message', async () => {
+    mockClearAllAppData.mockRejectedValueOnce(new Error(''));
+
+    renderWithProviders(<Welcome />);
+    fireEvent.click(screen.getByRole('button', { name: /Clear app data & restart/ }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Could not clear app data/)).toBeInTheDocument();
+    });
+  });
 });
 
 describe('Welcome — Select runtime button', () => {
