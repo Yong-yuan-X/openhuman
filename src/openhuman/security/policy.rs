@@ -195,6 +195,10 @@ fn is_python_command(command: &str) -> bool {
     command == "python"
         || command == "pythonw"
         || command
+            .strip_prefix("pythonw")
+            .and_then(|suffix| suffix.chars().next())
+            .is_some_and(|ch| ch.is_ascii_digit())
+        || command
             .strip_prefix("python")
             .and_then(|suffix| suffix.chars().next())
             .is_some_and(|ch| ch.is_ascii_digit())
