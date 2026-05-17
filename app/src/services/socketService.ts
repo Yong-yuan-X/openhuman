@@ -93,7 +93,7 @@ function normalizeChannelConnectionUpdatePayload(
 }
 
 function getSocketUserId(): string {
-  return getCoreStateSnapshot().snapshot.auth.userId ?? '__pending__';
+  return getCoreStateSnapshot().snapshot?.auth?.userId ?? '__pending__';
 }
 
 class SocketService {

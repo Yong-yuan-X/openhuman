@@ -131,6 +131,30 @@ describe('socketService — resolveCoreSocketBaseUrl uses getCoreRpcUrl', () => 
     });
   });
 
+  it('falls back to pending when the core auth snapshot is not available yet', async () => {
+    const { getCoreStateSnapshot } = await import('../../lib/coreState/store');
+    const { setStatusForUser } = await import('../../store/socketSlice');
+    const setStatusForUserMock = vi.mocked(setStatusForUser);
+
+    vi.mocked(getCoreStateSnapshot).mockReturnValue({
+      snapshot: { sessionToken: 'mock-token' },
+    } as ReturnType<typeof getCoreStateSnapshot>);
+
+    hoisted.getCoreRpcUrlMock.mockResolvedValue('http://127.0.0.1:7788/rpc');
+
+    const { socketService } = await import('../socketService');
+    socketService.disconnect();
+    setStatusForUserMock.mockClear();
+    socketService.connect('mock-token-with-missing-auth');
+
+    await pollUntil(() =>
+      expect(setStatusForUserMock).toHaveBeenCalledWith({
+        userId: '__pending__',
+        status: 'connecting',
+      })
+    );
+  });
+
   it('strips /rpc suffix from the resolved RPC URL to derive the socket base', async () => {
     const { io } = await import('socket.io-client');
     const ioMock = vi.mocked(io);
